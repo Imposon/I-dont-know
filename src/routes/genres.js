@@ -1,9 +1,10 @@
 const express = require("express")
-const {PrismaClient} = "@prisma/client"
-const router = express.router()
+const {PrismaClient} = require("@prisma/client")
+const route = express.Router()
 const prisma = new PrismaClient()
+const app = express()
 
-app.post("/",async(req,res)=>{
+route.post("/genre",async(req,res)=>{
     const {name} = req.body
 
     
@@ -11,4 +12,8 @@ app.post("/",async(req,res)=>{
         data:{name}
     })
     res.json(genre)
+})
+
+app.listen(3000,()=>{
+    console.log("Server started")
 })
