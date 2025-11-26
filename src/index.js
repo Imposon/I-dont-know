@@ -3,7 +3,6 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-
 const app = express();
 
 app.use(express.json());
@@ -22,46 +21,47 @@ app.post("/api/v1/genres", async (req, res) => {
   res.status(201).json(genre);
 })
 
-app.get("/genres",async(req,res)=>{
+app.get("/api/v1/genres", async (req, res) => {
   const genres = await prisma.genre.findMany();
-  res.status(200).json(genres)
-
+  return res.status(200).json(genres);
 })
 
-app.get("/genres/:id",async(req,res)=>{
-  const id = req.params.id
+app.get("/api/v1/genres/:id", async (req, res) => {
+  const id = Number(req.params.id);
   const genre = await prisma.genre.findUnique({
-    where :{Genre_id: id}
+    where: {
+      id
+    }
   })
-  if (!genre) return res.status(404).json({error:"NOt Available"})
+
+  if (!genre) {
+    return res.status(404).json({ error: "Genre with the given id does not exist" })
+  }
   res.status(200).json(genre)
 })
 
-app.patch("/genres/:id",async(req,res)=>{
-  const id = req.params.id
-  const {name} = req.body
-  const updated = await prisma.genre.update({
-    where: { Genre_id: id },
-    data: { name },
-  });
-  res.status(200).json(updated)
-})
-
-
-app.delete("/genres/:id", async (req, res) => {
+app.patch("/api/v1/genres/:id", async (req, res) => {
   const id = req.params.id;
-  await prisma.genre.delete({
-    where: { Genre_id: id },
-  });
+  await prisma.genre.update({
+    where: {
+      id: id
+    },
+    data: req.body
+  })
 
-  res.status(200).json({ message: "deleted" });
+  return res.status(200).send("OK")
 })
 
+app.delete("/api/v1/genres/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  await prisma.genre.delete({
+    where: {
+      id: id
+    }
+  })
 
-
-
-
-
+  return res.status(204).send();
+})
 
 app.get("/author",async(req,res)=>{
   const author = await prisma.author.findMany();
@@ -76,6 +76,7 @@ app.post("/api/v1/authors",async (req,res)=>{
   }) 
   res.status(201).json(authors)
 })
+
 
 
 app.listen(3003, () => {
