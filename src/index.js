@@ -22,12 +22,16 @@ app.post("/api/v1/genres", async (req, res) => {
   res.status(201).json(genre);
 })
 
-app.get("/",async(req,res)=>{
+app.get("/genres",async(req,res)=>{
   const genres = await prisma.genre.findMany();
   res.status(201).json(genres)
 
 })
 
+app.get("/author",async(req,res)=>{
+  const author = await prisma.author.findMany();
+  res.status(201).json(author)
+})
 
 
 
