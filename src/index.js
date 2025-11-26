@@ -32,6 +32,15 @@ app.get("/author",async(req,res)=>{
   const author = await prisma.author.findMany();
   res.status(201).json(author)
 })
+app.post("/api/v1/authors",async (req,res)=>{
+  const {name,DOB} = req.body;
+  let authors = await prisma.author.create({
+    data:{
+      name,DOB
+    }
+  }) 
+  res.status(201).json(authors)
+})
 
 
 
